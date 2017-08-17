@@ -1,10 +1,11 @@
+package PP20170809BasketballSim;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,28 +16,7 @@ import org.jsoup.nodes.Element;
 
 import utilities.BinarySearch;
 
-/*Basketball simulation application
-*User inputs two teams
-*The app then pulls the data down for each team from teamrankings.com/ncaa-basketball/stat
-*
-*The app then runs through a game displaying each possession
-* */
-
-//TODO Save the teams stats in a text file
-//TODO After a month, or week, update the text file by re-getting stats on the website
-
-//TODO Set up threading so the app opens, checks if a text file is there, and if not gets the teams via the website. While asking the user the names of the teams.
-//TODO implement rebounding
-//TODO See if I can cleanup code/move some code to new/other methods for ease of use when adding features (run possession for rebounding)
-
-public class PP20170809BasketballSim {
-	@SuppressWarnings("unused")
-	public static void main(String[] args) throws IOException {
-		Game game = new Game();
-	}
-}
-
-class Game {
+public class Game {
 	
 	
 	private int totalPoss = 0, // Total possessions of the game
@@ -327,10 +307,8 @@ class Game {
 				
 				//Now that the teams are sorted, let's go through each link and save the data
 				double[][] stats = new double[351][STATS_NEEDED_LINKS.length];
-				int cols; //Number of columns for each table
 				for (int i = 0; i < STATS_NEEDED_LINKS.length; i++) {
 					Document statDoc = Jsoup.connect(STATS_NEEDED_LINKS[i]).get(); // Getting the stat link
-					cols = statDoc.select("tr").get(2).select("td").size(); // The number of columns in this table
 					
 					//Going through each row and saving the teams info while skipping the first header row
 					int skipHeaderRow = 0;
@@ -355,8 +333,15 @@ class Game {
 				
 				//TODO stopped here. Now I have that stats[][] array populated and is parallel to teamsNames[].
 				//TODO Now I need to write the information to the csv file
-				System.out.println(stats.length);
-				System.out.println(teamNames[1] + " " + stats[1][1]);
+				for (int i = 0; i < stats.length; i++) {
+					System.out.print(teamNames[i] + " ");
+					for (int x = 0; x < stats[0].length; x++) {
+						System.out.print(stats[i][x] + " ");
+					}
+					System.out.print("\n");
+				}
+//				System.out.println(stats.length);
+//				System.out.println(teamNames[1] + " " + stats[1][1]);
 				
 				pw.write(sb.toString());
 				pw.close();
@@ -551,184 +536,3 @@ class Game {
 	}
 }
 
-class Team {
-	private double avgFG, // Average FG %
-			avg3, // Avg 3 pt %
-			matchupAvgFg, // (team1 avgFG+team2 oppFG)/2
-			matchupAvg3, // (team1 avg3+team2 opp3)/2
-			oppFG, // Avg opp fg %
-			opp3, // Avg opp 3 %
-			ftPP, // Avg freethrows taken per possession
-			ft, // Avg ft %
-			ftStored, // ftPP added each possession. On a miss, if ftStored = 2, shoot free throws. On
-						// a make, if ftStored=1 shoot free throw
-			shotsFrom2, // Avg points % from 2
-			shotsFrom3, // Avg points % from 3
-			possPG, // Avg possessions during a game
-			turnovers, // Avg turnovers during a game
-			toRate; // Turnover rate during the match-up
-	private int score;
-	private String name;
-
-	Team() {
-		this.avgFG = 0;
-		this.avg3 = 0;
-		this.matchupAvgFg = 0;
-		this.matchupAvg3 = 0;
-		this.oppFG = 0;
-		this.opp3 = 0;
-		this.ftPP = 0;
-		this.ft = 0;
-		this.ftStored = 0;
-		this.shotsFrom2 = 0;
-		this.shotsFrom3 = 0;
-		this.possPG = 0;
-		this.turnovers = 0;
-		this.toRate = 0;
-		this.name = "";
-		this.score = 0;
-	}
-
-	// Each fgAtt add to ftStored
-	public void addToFtStored() {
-		this.ftStored += this.ftPP;
-	}
-
-	// After each ftAtt subtract from ftStored
-	public void subFromFtStored() {
-		this.ftStored -= 1;
-	}
-
-	// Add points to score
-	public void addToScore(int points) {
-		this.score += points;
-	}
-
-	public int getScore() {
-		return score;
-	}
-
-	public void setScore(int score) {
-		this.score = score;
-	}
-
-	public double getAvgFG() {
-		return avgFG;
-	}
-
-	public void setAvgFG(double avgFG) {
-		this.avgFG = avgFG;
-	}
-
-	public double getAvg3() {
-		return avg3;
-	}
-
-	public void setAvg3(double avg3) {
-		this.avg3 = avg3;
-	}
-
-	public double getMatchupAvgFg() {
-		return matchupAvgFg;
-	}
-
-	public void setMatchupAvgFg(double matchupAvgFg) {
-		this.matchupAvgFg = matchupAvgFg;
-	}
-
-	public double getMatchupAvg3() {
-		return matchupAvg3;
-	}
-
-	public void setMatchupAvg3(double matchupAvg3) {
-		this.matchupAvg3 = matchupAvg3;
-	}
-
-	public double getOppFG() {
-		return oppFG;
-	}
-
-	public void setOppFG(double oppFG) {
-		this.oppFG = oppFG;
-	}
-
-	public double getOpp3() {
-		return opp3;
-	}
-
-	public void setOpp3(double opp3) {
-		this.opp3 = opp3;
-	}
-
-	public double getFtPP() {
-		return ftPP;
-	}
-
-	public void setFtPP(double ftPP) {
-		this.ftPP = ftPP;
-	}
-
-	public double getFtStored() {
-		return ftStored;
-	}
-
-	public void setFtStored(double ftStored) {
-		this.ftStored = ftStored;
-	}
-
-	public double getFt() {
-		return ft;
-	}
-
-	public void setFt(double ft) {
-		this.ft = ft;
-	}
-
-	public double getShotsFrom2() {
-		return shotsFrom2;
-	}
-
-	public void setShotsFrom2(double shotsFrom2) {
-		this.shotsFrom2 = shotsFrom2;
-	}
-
-	public double getShotsFrom3() {
-		return shotsFrom3;
-	}
-
-	public void setShotsFrom3(double shotsFrom3) {
-		this.shotsFrom3 = shotsFrom3;
-	}
-
-	public double getPossPG() {
-		return possPG;
-	}
-
-	public void setPossPG(double possPG) {
-		this.possPG = possPG;
-	}
-
-	public double getTurnovers() {
-		return turnovers;
-	}
-
-	public void setTurnovers(double turnovers) {
-		this.turnovers = turnovers;
-	}
-
-	public double getToRate() {
-		return toRate;
-	}
-
-	public void setToRate(double toRate) {
-		this.toRate = toRate;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-}

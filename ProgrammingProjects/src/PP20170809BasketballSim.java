@@ -1,4 +1,10 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -17,6 +23,10 @@ import org.jsoup.nodes.Element;
 //TODO Save the teams stats in a text file
 //TODO After a month, or week, update the text file by re-getting stats on the website
 
+//TODO Set up threading so the app opens, checks if a text file is there, and if not gets the teams via the website. While asking the user the names of the teams.
+//TODO implement rebounding
+//TODO See if I can cleanup code/move some code to new/other methods for ease of use when adding features (run possession for rebounding)
+
 public class PP20170809BasketballSim {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException {
@@ -25,13 +35,15 @@ public class PP20170809BasketballSim {
 }
 
 class Game {
+	
+	
 	private int totalPoss = 0, // Total possessions of the game
 			half = 0, // 0 = first half, 1 = second half
 			possession = 0; // 0 = team1, 1 = team2
 	private List<Integer> periodPoss = new ArrayList<>(); // Array List to hold the amount of possession for each period
 	private double timeLeft = 1200.00; // 1200 = 20:00, 300 = 5:00
 	private List<Double> timeOfPoss = new ArrayList<>(); // Average time of possession for each period
-	private final String[] STATS_NEEDED_LINKS = { "https://www.teamrankings.com/ncaa-basketball/stat/two-point-pct", // avgFG
+	private final static String[] STATS_NEEDED_LINKS = { "https://www.teamrankings.com/ncaa-basketball/stat/two-point-pct", // avgFG
 			"https://www.teamrankings.com/ncaa-basketball/stat/three-point-pct", // avg3
 			"https://www.teamrankings.com/ncaa-basketball/stat/opponent-two-point-pct", /// oppFG
 			"https://www.teamrankings.com/ncaa-basketball/stat/opponent-three-point-pct", // opp3
@@ -44,6 +56,8 @@ class Game {
 	};
 
 	Game() throws IOException {
+		saveStatsToTextFile();
+		
 		Scanner sc = new Scanner(System.in); // For input
 		Team[] teams = new Team[2]; // Array to hold the two teams
 		for (int i = 0; i < 2; i++) {
@@ -256,6 +270,72 @@ class Game {
 		}
 
 		team.subFromFtStored();
+	}
+	
+	public static void saveStatsToTextFile() throws IOException{
+		//TODO Check if file exists
+		//TODO if not, create file
+		//TODO Print out a date on the top
+		//TODO if date > week, update data
+		
+		//The directory and file name
+		File teamStatsDir = new File("teamStats");
+		File teamStats = new File("teamStats/teamStats.csv");
+		
+		//If directory does not exist, create the directory and the file
+		if (!teamStatsDir.exists()) {
+			teamStatsDir.mkdir();
+			teamStats.createNewFile();
+		}
+		//Else if directory exists but the file does not, create the file.
+		else if (!teamStats.exists()) {
+			teamStats.createNewFile();
+		}
+		//Else the directory and file exist.
+		else {
+			FileReader fileReader = new FileReader(teamStats);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			
+			//Getting the oldDate in the CSV file
+			String dateInCSV = bufferedReader.readLine();
+			LocalDate oldDate = LocalDate.parse(dateInCSV);
+			
+			//getting the count for the total of rows in the csv
+			int count = 1;
+			while (bufferedReader.readLine() != null) {
+				count++;
+			}
+			
+			//If date is older than a week OR if the file does not 353 rows (351 teams plus the two header lines), update file
+			if (LocalDate.now().isAfter(oldDate.plusDays(7)) || count != 353) {
+				//TODO UPDATE FILE
+				//TODO Save the correct date
+				
+				//Creating the writers and variables
+				PrintWriter pw = new PrintWriter(teamStats);
+				StringBuilder sb = new StringBuilder();
+				LocalDate localDate = LocalDate.now().minusDays(10);
+				
+				//Adding the date and the headers
+				sb.append(localDate.toString()+"\n");
+				sb.append("team_name,avgFG,avg3,oppFG,opp3,ftPP,ft,shotsFrom2,shotsFrom3,possPG,toRate\n");
+				
+				List<String> teamNamesList = new ArrayList<>();
+				Document doc = Jsoup.connect(STATS_NEEDED_LINKS[0]).get();
+				for (Element row : doc.select("td > a")) {
+					teamNamesList.add(row.html().toUpperCase());
+				}
+				teamNamesList.sort(String::compareToIgnoreCase);
+				for (String team : teamNamesList) {
+					sb.append(team + "\n");
+				}
+				
+				pw.write(sb.toString());
+				pw.close();
+			}
+			bufferedReader.close();
+			System.out.println("Closed");
+		}
 	}
 
 	// Gets the stats of the teams

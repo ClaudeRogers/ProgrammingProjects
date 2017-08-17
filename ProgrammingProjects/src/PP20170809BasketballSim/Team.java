@@ -1,6 +1,11 @@
 package PP20170809BasketballSim;
 
 public class Team {
+	//TODO Need a public static final string[] with the possible team names
+	//TODO Need a public static method to validate team name to make sure it is in possible list
+	//TODO put validate method in the setName method
+	//TODO need to move validate method out of Game.java
+	
 	private double avgFG, // Average FG %
 	avg3, // Avg 3 pt %
 	matchupAvgFg, // (team1 avgFG+team2 oppFG)/2

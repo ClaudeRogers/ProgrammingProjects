@@ -328,24 +328,22 @@ public class Game {
 						//Saving the stat
 						stats[index][i] = stat;						
 					}
-					System.out.println("Finshed with a table");
 				}
 				
 				//TODO stopped here. Now I have that stats[][] array populated and is parallel to teamsNames[].
 				//TODO Now I need to write the information to the csv file
 				for (int i = 0; i < stats.length; i++) {
-					System.out.print(teamNames[i] + " ");
+					sb.append(teamNames[i]+",");
 					for (int x = 0; x < stats[0].length; x++) {
-						System.out.print(stats[i][x] + " ");
+						sb.append(stats[i][x] + ",");
 					}
-					System.out.print("\n");
+					sb.deleteCharAt(sb.lastIndexOf(","));
+					sb.append("\n");
 				}
-//				System.out.println(stats.length);
-//				System.out.println(teamNames[1] + " " + stats[1][1]);
 				
 				pw.write(sb.toString());
 				pw.close();
-				
+				System.out.println("close");
 			}
 			bufferedReader.close();
 		}

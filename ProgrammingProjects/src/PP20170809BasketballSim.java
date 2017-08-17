@@ -13,6 +13,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import utilities.BinarySearch;
+
 /*Basketball simulation application
 *User inputs two teams
 *The app then pulls the data down for each team from teamrankings.com/ncaa-basketball/stat
@@ -75,13 +77,6 @@ class Game {
 				teams[i].setName(sc.nextLine().trim().toUpperCase());
 			}
 		}
-//		
-//		do {
-//			System.out.print("Please enter Team 1's name:  ");
-//			teams[0].setName(sc.nextLine().trim().toUpperCase());
-//			System.out.print("Please enter Team 2's name:  ");
-//			teams[1].setName(sc.nextLine().trim().toUpperCase());
-//		} while ();
 		sc.close(); // Closes scanner
 
 		System.out.println("\nTonight's game is " + teams[0].getName() + " vs " + teams[1].getName() + "\n");
@@ -273,11 +268,6 @@ class Game {
 	}
 	
 	public static void saveStatsToTextFile() throws IOException{
-		//TODO Check if file exists
-		//TODO if not, create file
-		//TODO Print out a date on the top
-		//TODO if date > week, update data
-		
 		//The directory and file name
 		File teamStatsDir = new File("teamStats");
 		File teamStats = new File("teamStats/teamStats.csv");
@@ -298,14 +288,20 @@ class Game {
 			
 			//Getting the oldDate in the CSV file
 			String dateInCSV = bufferedReader.readLine();
-			LocalDate oldDate = LocalDate.parse(dateInCSV);
+			LocalDate oldDate;
+			try {
+				oldDate = LocalDate.parse(dateInCSV);
+			}
+			catch (NullPointerException e) {
+				oldDate = LocalDate.parse("0000-01-01");
+			}
 			
 			//getting the count for the total of rows in the csv
 			int count = 1;
 			while (bufferedReader.readLine() != null) {
 				count++;
 			}
-			
+
 			//If date is older than a week OR if the file does not 353 rows (351 teams plus the two header lines), update file
 			if (LocalDate.now().isAfter(oldDate.plusDays(7)) || count != 353) {
 				//TODO UPDATE FILE
@@ -320,26 +316,60 @@ class Game {
 				sb.append(localDate.toString()+"\n");
 				sb.append("team_name,avgFG,avg3,oppFG,opp3,ftPP,ft,shotsFrom2,shotsFrom3,possPG,toRate\n");
 				
+				//Getting the team names in alphabetical order and converts it to an array
 				List<String> teamNamesList = new ArrayList<>();
 				Document doc = Jsoup.connect(STATS_NEEDED_LINKS[0]).get();
 				for (Element row : doc.select("td > a")) {
 					teamNamesList.add(row.html().toUpperCase());
 				}
 				teamNamesList.sort(String::compareToIgnoreCase);
-				for (String team : teamNamesList) {
-					sb.append(team + "\n");
+				String[] teamNames = teamNamesList.toArray(new String[teamNamesList.size()]);
+				
+				//Now that the teams are sorted, let's go through each link and save the data
+				double[][] stats = new double[351][STATS_NEEDED_LINKS.length];
+				int cols; //Number of columns for each table
+				for (int i = 0; i < STATS_NEEDED_LINKS.length; i++) {
+					Document statDoc = Jsoup.connect(STATS_NEEDED_LINKS[i]).get(); // Getting the stat link
+					cols = statDoc.select("tr").get(2).select("td").size(); // The number of columns in this table
+					
+					//Going through each row and saving the teams info while skipping the first header row
+					int skipHeaderRow = 0;
+					for (Element teams : statDoc.select("tr")) {
+						if (skipHeaderRow == 0) {
+							skipHeaderRow++;
+							continue;
+						}
+						
+						//Getting the team name and stat
+						String teamName = teams.select("td").get(1).select("a").html();
+						double stat = Double.parseDouble(teams.select("td").get(2).html().replace("%", ""));
+						
+						//Doing a binary search for the team name to pull the index it needs to store in
+						int index = BinarySearch.search(teamName.toUpperCase(), teamNames);
+						
+						//Saving the stat
+						stats[index][i] = stat;						
+					}
+					System.out.println("Finshed with a table");
 				}
+				
+				//TODO stopped here. Now I have that stats[][] array populated and is parallel to teamsNames[].
+				//TODO Now I need to write the information to the csv file
+				System.out.println(stats.length);
+				System.out.println(teamNames[1] + " " + stats[1][1]);
 				
 				pw.write(sb.toString());
 				pw.close();
+				
 			}
 			bufferedReader.close();
-			System.out.println("Closed");
 		}
 	}
 
 	// Gets the stats of the teams
 	public void getStats(Team[] teams, Scanner sc) throws IOException {
+		//TODO Will need to be rewritten to take from the file, or read from the website if the file is not made/updated
+		//TODO Since the file will be updating in a background thread, if updating read from website.
 		int cols = 0, // The number of columns in each of the stats table. Will be used in the for
 						// loop directly below.
 				teamsIndexCount = 0; // The index counter

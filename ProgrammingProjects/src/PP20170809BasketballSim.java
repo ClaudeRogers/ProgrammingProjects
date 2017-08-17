@@ -18,6 +18,7 @@ public class PP20170809BasketballSim {
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException{
 		Game game = new Game();		
+		//TODO Add a who wins printout
 	}
 }
 
@@ -50,6 +51,7 @@ class Game {
 		
 		//Getting the teams's names
 		//TODO Add validation with teamrankings.com list of college names
+		//TODO do while loop to validate if name is not in the website table, re ask the user
 		System.out.print("Please enter Team 1's name:  ");
 		teams[0].setName(sc.nextLine().trim());
 		System.out.print("Please enter Team 2's name:  ");

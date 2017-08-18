@@ -15,16 +15,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import utilities.BinarySearch;
-
 public class Game {
+	private int totalPoss = 0, 	// Total possessions of the game
+			half = 0, 			// 0 = first half, 1 = second half, 2 = OT
+			possession = 0, 	// 0 = team1, 1 = team2
+			otCount = 0;		// Count of OT periods
+
+	// Array List to hold the amount of possession for each period
+	private int[] periodPoss = new int[3];
 	
-	
-	private int totalPoss = 0, // Total possessions of the game
-			half = 0, // 0 = first half, 1 = second half
-			possession = 0; // 0 = team1, 1 = team2
-	private List<Integer> periodPoss = new ArrayList<>(); // Array List to hold the amount of possession for each period
 	private double timeLeft = 1200.00; // 1200 = 20:00, 300 = 5:00
-	private List<Double> timeOfPoss = new ArrayList<>(); // Average time of possession for each period
+	
+	private double[] timeOfPoss = new double[3]; // Average time of possession for each period
+	
 	private final static String[] STATS_NEEDED_LINKS = { "https://www.teamrankings.com/ncaa-basketball/stat/two-point-pct", // avgFG
 			"https://www.teamrankings.com/ncaa-basketball/stat/three-point-pct", // avg3
 			"https://www.teamrankings.com/ncaa-basketball/stat/opponent-two-point-pct", /// oppFG
@@ -36,90 +39,88 @@ public class Game {
 			"https://www.teamrankings.com/ncaa-basketball/stat/possessions-per-game", // possPG
 			"https://www.teamrankings.com/ncaa-basketball/stat/turnovers-per-possession" // toRate
 	};
+	Team[] teams = new Team[2];
+	Team teamWPoss;
 
 	Game() throws IOException {
 		saveStatsToTextFile();
 		
-		Scanner sc = new Scanner(System.in); // For input
-		Team[] teams = new Team[2]; // Array to hold the two teams
+		Scanner sc = new Scanner(System.in);
 		for (int i = 0; i < 2; i++) {
 			teams[i] = new Team(); // Initializing each team
 		}
 
-		// Getting the teams's names
+		// Getting the teams's names from user input, validate name, and then set name
 		for (int i = 0; i < 2; i++) {
 			System.out.print("Please enter Team "+(i+1)+"'s name:  ");
-			teams[i].setName(sc.nextLine().trim().toUpperCase());
-			while (!validateName(teams[i])) {
+			String tempName = sc.nextLine().trim().toUpperCase();
+			
+			//While validation of tempName fails, ask again.
+			while (!Team.validateName(tempName)) {
 				System.out.println("Team name not found on www.teamrankings.com/ncb/.\nPlease visit the site and find the teams name.");
-				
 				System.out.print("Please enter Team "+(i+1)+"'s name:  ");
-				teams[i].setName(sc.nextLine().trim().toUpperCase());
+				tempName = sc.nextLine().trim().toUpperCase();
 			}
+			
+			//When validation passes, setName
+			teams[i].setName(tempName);
 		}
-		sc.close(); // Closes scanner
+		sc.close();
 
 		System.out.println("\nTonight's game is " + teams[0].getName() + " vs " + teams[1].getName() + "\n");
 
-		getStats(teams, sc); // Getting the stats via user input
+		getStats(); // Getting the stats
 
-		// Calculating the total possessions in the game. Rounding down as a team cannot
-		// have less than one possession.
-		this.setTotalPoss((int) Math.floor(teams[0].getPossPG() + teams[1].getPossPG()));
+		// Calculating the total possessions in the game. Rounding down as a team cannot have less than one possession.
+		setTotalPoss((int) Math.floor(teams[0].getPossPG() + teams[1].getPossPG()));
 
-		// Calculating the total possessions for the first half and the second half of
-		// the game.
-		this.appendPeriodPoss(this.getTotalPoss() / 2); // Gives half of the possessions to the first half
-		this.appendPeriodPoss(this.getTotalPoss() - this.getPeriodPoss(0)); // Subtracts the first half from the total,
-																			// that way it allows for an odd number of
-																			// possessions.
-
+		//Getting total possessions for first and second half.
+		//Divide by 2 for first to round down if odd number of total possessions.
+		//Subtract first half possessions by total possessions to get second half.
+		setPeriodPoss((getTotalPoss() / 2), 0);
+		setPeriodPoss((getTotalPoss() - getPeriodPoss(0)), 1);
+		
 		// Calculating the time of possession for each half.
-		this.appendTimeOfPoss(this.getTimeLeft() / this.getPeriodPoss(0));
-		this.appendTimeOfPoss(this.getTimeLeft() / this.getPeriodPoss(1));
-
+		setTimeOfPoss((1200/getPeriodPoss(0)), 0);
+		setTimeOfPoss((1200/getPeriodPoss(1)), 1);
+		
+		//Calculating the periodPoss using the second half avg timeOfPoss for OT
+		setPeriodPoss((int)(300/getTimeOfPoss(1)),2);
+		setTimeOfPoss(getTimeOfPoss(1), 2);
+		
 		// Calculates each teams FG% for the game
+		// Take team1 offense FG% + team2 defense FG% and divide by 2 to find average
 		teams[0].setMatchupAvgFg((teams[0].getAvgFG() + teams[1].getOppFG()) / 2);
 		teams[1].setMatchupAvgFg((teams[1].getAvgFG() + teams[0].getOppFG()) / 2);
 		teams[0].setMatchupAvg3((teams[0].getAvg3() + teams[1].getOpp3()) / 2);
 		teams[1].setMatchupAvg3((teams[1].getAvg3() + teams[0].getOpp3()) / 2);
 
 		// Play a game
-		playAGame(teams);
-	}
-
-	public boolean validateName(Team team) throws IOException{
-		//Connecting to a table to pull the team names
-		Document doc = Jsoup.connect(STATS_NEEDED_LINKS[0]).get();
-	
-		for (Element row : doc.select("td > a")) {
-			if (row.html().toUpperCase().equals(team.getName())) return true;
-		}			
-		return false;
+		playGame();
 	}
 
 	// Function to play the whole game
-	public void playAGame(Team[] teams) {
+	public void playGame() {
 		String firSec = "first";
 		// Calculating who wins the tipoff and gets the first possession
 		double tipoff = Math.random() * 100 + 1;
 
 		// Loops through both halves
 		for (int i = 0; i < 2; i++) {
-			this.setHalf(i); // Sets the half
+			setHalf(i); // Sets the half
 
 			// Prints which half is starting.
-			if (this.getHalf() == 1)
+			if (getHalf() == 1)
 				firSec = "second";
 			System.out.println("The " + firSec + " half is starting!");
 
 			// Printing out who won the tip if it is the first half
-			if (this.getHalf() == 0) {
-				printTipWinner(tipoff, teams);
+			if (getHalf() == 0) {
+				printTipWinner(tipoff);
 			}
 
 			// Call the method to play a half
-			playAHalf(teams);
+			playPeriod();
 		}
 
 		// If game is tied after the first two halves
@@ -129,11 +130,13 @@ public class Game {
 
 		// Run an overtime period
 		while (teams[0].getScore() == teams[1].getScore()) {
-			this.setHalf(this.getHalf() + 1);
-			System.out.println("Overtime period #" + (this.getHalf() - 1) + " is starting!");
-			playAHalf(teams);
+			setHalf(2);
+			addOneToOtCounter();
+			System.out.println("Overtime period #" + getOtCount() + " is starting!");
+			playPeriod();
 		}
 
+		//Prints out the winner
 		if (teams[0].getScore() > teams[1].getScore()) {
 			System.out.println(teams[0].getName() + " wins!");
 		} else {
@@ -141,42 +144,36 @@ public class Game {
 		}
 	}
 
-	// A function to play a half/OT of the game
-	public void playAHalf(Team[] teams) {
+	public void playPeriod() {
 		// Variables used to hold a random number to determine if the possession is
 		// turned over, or what shot is attempted, and whether the shot goes in
 		double turnover = 0, fg = 0, twoOrThree = 0;
 
 		// Sets the time left for each period. 1200 = 20:00, 300 = 5:00
-		if (this.getHalf() < 2)
-			this.setTimeLeft(1200.00);
+		if (getHalf() < 2)
+			setTimeLeft(1200.00);
 		else {
-			this.setTimeLeft(300.00);
-
-			// Setting the total possessions, time of possessions and tip off for overtime
-			this.appendTimeOfPoss(this.getTimeOfPoss(1));
-			int otPoss = (int) (300 / this.getTimeOfPoss(1));
-			this.appendPeriodPoss(otPoss);
+			setTimeLeft(300.00);
 
 			// Calculating who wins the tipoff and gets the first possession
 			double tipoff = Math.random() * 100 + 1;
-			printTipWinner(tipoff, teams);
+			printTipWinner(tipoff);
 		}
 
-		// Looping through each possesion
-		for (int i = 0; i < this.getPeriodPoss(this.getHalf()); i++) {
+		// Looping through each possession
+		for (int i = 0; i < getPeriodPoss(getHalf()); i++) {
 			// Displaying the time left
-			this.setTimeLeft(this.getTimeLeft() - this.getTimeOfPoss(this.getHalf()));
+			setTimeLeft(getTimeLeft() - getTimeOfPoss(getHalf()));
 			System.out.println(
-					(int) (this.getTimeLeft() / 60) + ":" + String.format("%02d", (int) (this.getTimeLeft() % 60)));
+					(int) (getTimeLeft() / 60) + ":" + String.format("%02d", (int) (getTimeLeft() % 60)));
 
 			// Calculates if possession results in turnover.
 			turnover = Math.random() * 100 + 1;
 
 			// If a turnover occurs. if the random turnover number is less than the TO rate
 			// of the team
-			if (turnover < teams[this.getPossession()].getToRate()) {
-				System.out.println(teams[this.getPossession()].getName() + " turned the ball over!");
+			if (turnover < getTeamWPoss().getToRate()) {
+				System.out.println(getTeamWPossName() + " turned the ball over!");
 
 				// Get game score and change possession
 				getGameScore(teams);
@@ -185,28 +182,28 @@ public class Game {
 			}
 
 			// Adding ftPP to ftStored
-			teams[this.getPossession()].addToFtStored();
+			getTeamWPoss().addToFtStored();
 
 			// Calculating what shot is attempted and whether it is made
 			twoOrThree = Math.random() * 100 + 1;// Calculating if a 2 or 3 is shot
 			fg = Math.random() * 100 + 1; // Calculating if a FG is made
-			if (twoOrThree > teams[this.getPossession()].getShotsFrom3()) {
-				if (fg < teams[this.getPossession()].getAvgFG()) {
-					teams[this.getPossession()].addToScore(2);
-					System.out.println(teams[this.getPossession()].getName() + " scores a two pointer!");
-					willShootFT(teams[this.getPossession()], 1);
+			if (twoOrThree > getTeamWPoss().getShotsFrom3()) {
+				if (fg < getTeamWPoss().getAvgFG()) {
+					getTeamWPoss().addToScore(2);
+					System.out.println(getTeamWPossName() + " scores a two pointer!");
+					willShootFT(1);
 				} else {
-					System.out.println(teams[this.getPossession()].getName() + " misses a two pointer!");
-					willShootFT(teams[this.getPossession()], 2);
+					System.out.println(getTeamWPossName() + " misses a two pointer!");
+					willShootFT(2);
 				}
 			} else {
-				if (fg < teams[this.getPossession()].getAvg3()) {
-					teams[this.getPossession()].addToScore(3);
-					System.out.println(teams[this.getPossession()].getName() + " scores a three pointer!");
-					willShootFT(teams[this.getPossession()], 1);
+				if (fg < getTeamWPoss().getAvg3()) {
+					getTeamWPoss().addToScore(3);
+					System.out.println(getTeamWPossName() + " scores a three pointer!");
+					willShootFT(1);
 				} else {
-					System.out.println(teams[this.getPossession()].getName() + " misses a three pointer!");
-					willShootFT(teams[this.getPossession()], 3);
+					System.out.println(getTeamWPossName() + " misses a three pointer!");
+					willShootFT(3);
 				}
 			}
 
@@ -224,27 +221,27 @@ public class Game {
 	}
 
 	// Determines if the team will shoot freethrows
-	public void willShootFT(Team team, double ftAtt) {
+	public void willShootFT(double ftAtt) {
 		// If the team has enough FT stored up to shoot
-		if (team.getFtStored() >= ftAtt) {
+		if (getTeamWPoss().getFtStored() >= ftAtt) {
 			for (int i = 0; i < ftAtt; i++) {
-				isFTMade(team);
+				isFTMade();
 			}
 		}
 	}
 
 	// Determines if a FT is made or missed
-	public void isFTMade(Team team) {
+	public void isFTMade() {
 		double ft = Math.random() * 100 + 1;
-
-		if (ft < team.getFt()) {
-			team.addToScore(1);
-			System.out.println(team.getName() + " made a free throw!");
+		
+		if (ft < getTeamWPoss().getFt()) {
+			getTeamWPoss().addToScore(1);
+			System.out.println(getTeamWPossName() + " made a free throw!");
 		} else {
-			System.out.println(team.getName() + " missed a free throw!");
+			System.out.println(getTeamWPossName() + " missed a free throw!");
 		}
 
-		team.subFromFtStored();
+		getTeamWPoss().subFromFtStored();
 	}
 	
 	public static void saveStatsToTextFile() throws IOException{
@@ -284,8 +281,8 @@ public class Game {
 
 			//If date is older than a week OR if the file does not 353 rows (351 teams plus the two header lines), update file
 			if (LocalDate.now().isAfter(oldDate.plusDays(7)) || count != 353) {
-				//TODO UPDATE FILE
 				//TODO Save the correct date
+				System.out.println("Please wait a couple of seconds while this application creates a .CSV file will all of the teams' data.");
 				
 				//Creating the writers and variables
 				PrintWriter pw = new PrintWriter(teamStats);
@@ -303,7 +300,7 @@ public class Game {
 					teamNamesList.add(row.html().toUpperCase());
 				}
 				teamNamesList.sort(String::compareToIgnoreCase);
-				String[] teamNames = teamNamesList.toArray(new String[teamNamesList.size()]);
+				Team.possibleTeamNames = teamNamesList.toArray(new String[teamNamesList.size()]);
 				
 				//Now that the teams are sorted, let's go through each link and save the data
 				double[][] stats = new double[351][STATS_NEEDED_LINKS.length];
@@ -323,17 +320,16 @@ public class Game {
 						double stat = Double.parseDouble(teams.select("td").get(2).html().replace("%", ""));
 						
 						//Doing a binary search for the team name to pull the index it needs to store in
-						int index = BinarySearch.search(teamName.toUpperCase(), teamNames);
+						int index = BinarySearch.search(teamName.toUpperCase(), Team.possibleTeamNames);
 						
 						//Saving the stat
 						stats[index][i] = stat;						
 					}
 				}
 				
-				//TODO stopped here. Now I have that stats[][] array populated and is parallel to teamsNames[].
-				//TODO Now I need to write the information to the csv file
+				//Writing the teams and stats to the CSV file
 				for (int i = 0; i < stats.length; i++) {
-					sb.append(teamNames[i]+",");
+					sb.append(Team.possibleTeamNames[i]+",");
 					for (int x = 0; x < stats[0].length; x++) {
 						sb.append(stats[i][x] + ",");
 					}
@@ -341,18 +337,18 @@ public class Game {
 					sb.append("\n");
 				}
 				
+				//Printing the stats to the CSV file
 				pw.write(sb.toString());
 				pw.close();
-				System.out.println("close");
+				System.out.println("Finished updating the local .CSV file!\n");
 			}
 			bufferedReader.close();
 		}
 	}
 
 	// Gets the stats of the teams
-	public void getStats(Team[] teams, Scanner sc) throws IOException {
+	public void getStats() throws IOException {
 		//TODO Will need to be rewritten to take from the file, or read from the website if the file is not made/updated
-		//TODO Since the file will be updating in a background thread, if updating read from website.
 		int cols = 0, // The number of columns in each of the stats table. Will be used in the for
 						// loop directly below.
 				teamsIndexCount = 0; // The index counter
@@ -449,24 +445,22 @@ public class Game {
 			}
 		}
 	}
+	
+	public void addOneToOtCounter() {
+		otCount++;
+	}
 
 	// Function that prints who won the tipoff
-	public void printTipWinner(double tipoff, Team[] teams) {
-		if (tipoff < 50) {
-			this.setPossession(0);
-			System.out.println(teams[0].getName() + " won the tip!\n");
-		} else {
-			this.setPossession(1);
-			System.out.println(teams[1].getName() + " won the tip!\n");
-		}
+	public void printTipWinner(double tipoff) {
+		if (tipoff < 50) setPossession(0);
+		else setPossession(1);
+		System.out.println(getTeamWPossName() + " won the tip!\n");
 	}
 
 	// Function that changes the possession of the game
 	public void changePossession() {
-		if (this.getPossession() == 0)
-			this.setPossession(1);
-		else
-			this.setPossession(0);
+		if (getPossession() == 0) setPossession(1);
+		else setPossession(0);
 	}
 
 	// Displays the game score
@@ -478,7 +472,7 @@ public class Game {
 
 	// Getters and Setters
 	public int getTotalPoss() {
-		return this.totalPoss;
+		return totalPoss;
 	}
 
 	public void setTotalPoss(int totalPoss) {
@@ -486,19 +480,15 @@ public class Game {
 	}
 
 	public int getPeriodPoss(int index) {
-		return this.periodPoss.get(index);
+		return periodPoss[index];
 	}
 
-	public void setPeriodPoss(int index, int periodPoss) {
-		this.periodPoss.set(index, periodPoss);
-	}
-
-	public void appendPeriodPoss(int periodPoss) {
-		this.periodPoss.add(periodPoss);
+	public void setPeriodPoss(int periodPoss, int index) {
+		this.periodPoss[index] = periodPoss;
 	}
 
 	public int getHalf() {
-		return this.half;
+		return half;
 	}
 
 	public void setHalf(int half) {
@@ -506,7 +496,7 @@ public class Game {
 	}
 
 	public double getTimeLeft() {
-		return this.timeLeft;
+		return timeLeft;
 	}
 
 	public void setTimeLeft(double timeLeft) {
@@ -514,23 +504,64 @@ public class Game {
 	}
 
 	public double getTimeOfPoss(int index) {
-		return this.timeOfPoss.get(index);
+		return timeOfPoss[index];
 	}
 
-	public void setTimeOfPoss(int index, double timeOfPoss) {
-		this.timeOfPoss.set(index, timeOfPoss);
-	}
-
-	public void appendTimeOfPoss(double timeOfPoss) {
-		this.timeOfPoss.add(timeOfPoss);
+	public void setTimeOfPoss(double timeOfPoss, int index) {
+		this.timeOfPoss[index] = timeOfPoss;
 	}
 
 	public int getPossession() {
-		return this.possession;
+		return possession;
 	}
 
 	public void setPossession(int possession) {
 		this.possession = possession;
+		setTeamWPoss(teams[getPossession()]);
+	}
+	
+	public Team getTeamWPoss () {
+		return teamWPoss;
+	}
+	
+	public void setTeamWPoss(Team team) {
+		teamWPoss = team;
+	}
+	
+	public String getTeamWPossName() {
+		return getTeamWPoss().getName();
+	}
+	
+	public int getOtCount() {
+		return otCount;
+	}
+	
+	public void setOtCount(int otCount) {
+		this.otCount = otCount;
+	}
+	
+	public int[] getPeriodPoss() {
+		return periodPoss;
+	}
+
+	public void setPeriodPoss(int[] periodPoss) {
+		this.periodPoss = periodPoss;
+	}
+
+	public double[] getTimeOfPoss() {
+		return timeOfPoss;
+	}
+
+	public void setTimeOfPoss(double[] timeOfPoss) {
+		this.timeOfPoss = timeOfPoss;
+	}
+
+	public Team[] getTeams() {
+		return teams;
+	}
+
+	public void setTeams(Team[] teams) {
+		this.teams = teams;
 	}
 }
 

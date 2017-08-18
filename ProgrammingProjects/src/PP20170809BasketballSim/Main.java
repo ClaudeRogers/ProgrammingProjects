@@ -8,12 +8,7 @@ import java.io.IOException;
 *The app then runs through a game displaying each possession
 * */
 
-//TODO Save the teams stats in a text file
-//TODO After a month, or week, update the text file by re-getting stats on the website
-
-//TODO Set up threading so the app opens, checks if a text file is there, and if not gets the teams via the website. While asking the user the names of the teams.
 //TODO implement rebounding
-//TODO See if I can cleanup code/move some code to new/other methods for ease of use when adding features (run possession for rebounding)
 
 public class Main {
 	@SuppressWarnings("unused")

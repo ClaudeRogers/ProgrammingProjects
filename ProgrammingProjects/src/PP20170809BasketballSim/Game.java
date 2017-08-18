@@ -57,7 +57,7 @@ public class Game {
 			
 			//While validation of tempName fails, ask again.
 			while (!Team.validateName(tempName)) {
-				System.out.println("Team name not found on www.teamrankings.com/ncb/.\nPlease visit the site and find the teams name.");
+				System.out.println("Team name not found on www.teamrankings.com/ncb/.\nPlease visit the site to find the team's name.");
 				System.out.print("Please enter Team "+(i+1)+"'s name:  ");
 				tempName = sc.nextLine().trim().toUpperCase();
 			}

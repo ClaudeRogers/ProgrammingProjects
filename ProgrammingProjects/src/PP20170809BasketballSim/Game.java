@@ -41,6 +41,10 @@ public class Game {
 	};
 	Team[] teams = new Team[2];
 	Team teamWPoss;
+	
+	//The directory and file name
+	private static final File TEAM_STATE_DIR = new File("teamStats");
+	private static final File TEAM_STATS = new File("teamStats/teamStats.csv");
 
 	Game() throws IOException {
 		saveStatsToTextFile();
@@ -55,15 +59,20 @@ public class Game {
 			System.out.print("Please enter Team "+(i+1)+"'s name:  ");
 			String tempName = sc.nextLine().trim().toUpperCase();
 			
+			int index = Team.validateName(tempName);
+			
 			//While validation of tempName fails, ask again.
-			while (!Team.validateName(tempName)) {
-				System.out.println("Team name not found on www.teamrankings.com/ncb/.\nPlease visit the site to find the team's name.");
+			while (Team.validateName(tempName) == -1) {
+				System.out.println("Team name not found on www.teamrankings.com/ncb/\nPlease visit the site to find the team's name.");
 				System.out.print("Please enter Team "+(i+1)+"'s name:  ");
 				tempName = sc.nextLine().trim().toUpperCase();
+				index = Team.validateName(tempName);
 			}
 			
 			//When validation passes, setName
 			teams[i].setName(tempName);
+			//Set the team index of the csv file
+			teams[i].setIndex(index);
 		}
 		sc.close();
 
@@ -245,22 +254,18 @@ public class Game {
 	}
 	
 	public static void saveStatsToTextFile() throws IOException{
-		//The directory and file name
-		File teamStatsDir = new File("teamStats");
-		File teamStats = new File("teamStats/teamStats.csv");
-		
 		//If directory does not exist, create the directory and the file
-		if (!teamStatsDir.exists()) {
-			teamStatsDir.mkdir();
-			teamStats.createNewFile();
+		if (!TEAM_STATE_DIR.exists()) {
+			TEAM_STATE_DIR.mkdir();
+			TEAM_STATS.createNewFile();
 		}
 		//Else if directory exists but the file does not, create the file.
-		else if (!teamStats.exists()) {
-			teamStats.createNewFile();
+		else if (!TEAM_STATS.exists()) {
+			TEAM_STATS.createNewFile();
 		}
 		//Else the directory and file exist.
 		else {
-			FileReader fileReader = new FileReader(teamStats);
+			FileReader fileReader = new FileReader(TEAM_STATS);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			
 			//Getting the oldDate in the CSV file
@@ -281,13 +286,12 @@ public class Game {
 
 			//If date is older than a week OR if the file does not 353 rows (351 teams plus the two header lines), update file
 			if (LocalDate.now().isAfter(oldDate.plusDays(7)) || count != 353) {
-				//TODO Save the correct date
 				System.out.println("Please wait a couple of seconds while this application creates a .CSV file will all of the teams' data.");
 				
 				//Creating the writers and variables
-				PrintWriter pw = new PrintWriter(teamStats);
+				PrintWriter pw = new PrintWriter(TEAM_STATS);
 				StringBuilder sb = new StringBuilder();
-				LocalDate localDate = LocalDate.now().minusDays(10);
+				LocalDate localDate = LocalDate.now();
 				
 				//Adding the date and the headers
 				sb.append(localDate.toString()+"\n");
@@ -300,7 +304,9 @@ public class Game {
 					teamNamesList.add(row.html().toUpperCase());
 				}
 				teamNamesList.sort(String::compareToIgnoreCase);
-				Team.possibleTeamNames = teamNamesList.toArray(new String[teamNamesList.size()]);
+				//TODO Save possible names to text doc, then have teams.POSSIBLE_TEAM_NAMES pull from the text doc.
+				//TODO updat names doc when update stats doc
+//				Team.POSSIBLE_TEAM_NAMES = teamNamesList.toArray(new String[teamNamesList.size()]);
 				
 				//Now that the teams are sorted, let's go through each link and save the data
 				double[][] stats = new double[351][STATS_NEEDED_LINKS.length];
@@ -320,7 +326,7 @@ public class Game {
 						double stat = Double.parseDouble(teams.select("td").get(2).html().replace("%", ""));
 						
 						//Doing a binary search for the team name to pull the index it needs to store in
-						int index = BinarySearch.search(teamName.toUpperCase(), Team.possibleTeamNames);
+						int index = BinarySearch.search(teamName.toUpperCase(), Team.POSSIBLE_TEAM_NAMES);
 						
 						//Saving the stat
 						stats[index][i] = stat;						
@@ -329,7 +335,7 @@ public class Game {
 				
 				//Writing the teams and stats to the CSV file
 				for (int i = 0; i < stats.length; i++) {
-					sb.append(Team.possibleTeamNames[i]+",");
+					sb.append(Team.POSSIBLE_TEAM_NAMES[i]+",");
 					for (int x = 0; x < stats[0].length; x++) {
 						sb.append(stats[i][x] + ",");
 					}
@@ -348,103 +354,58 @@ public class Game {
 
 	// Gets the stats of the teams
 	public void getStats() throws IOException {
-		//TODO Will need to be rewritten to take from the file, or read from the website if the file is not made/updated
-		int cols = 0, // The number of columns in each of the stats table. Will be used in the for
-						// loop directly below.
-				teamsIndexCount = 0; // The index counter
-		int[] teamsIndex = { -1, -1 }; // The index of the teams for each stats table. -1, -1 for default values
-
-		// A loop to cycle through each of the links and pulls the needed values
-		for (int i = 0; i < STATS_NEEDED_LINKS.length; i++) {
-			// Setting the default value for variables
-			teamsIndexCount = 0;
-			teamsIndex[0] = -1;
-			teamsIndex[1] = -1;
-
-			// Getting the stat link
-			Document doc = Jsoup.connect(STATS_NEEDED_LINKS[i]).get();
-			cols = doc.select("tr").get(2).select("td").size(); // The number of columns in this table
-
-			for (Element row : doc.select("td > a ")) {
-				if (teamsIndex[0] != -1 && teamsIndex[1] != -1) {
-					break; // Do not continue with the for loop because both indexes have been set.
-				}
-
-				// Checking if the name in the row matches to one of the names inputted by the
-				// user
-				if (row.html().toUpperCase().equals(teams[0].getName())) {
-					teamsIndex[0] = teamsIndexCount;
-				} else if (row.html().toUpperCase().equals(teams[1].getName())) {
-					teamsIndex[1] = teamsIndexCount;
-				}
-
-				// Count will be used to hold the current index being tested
-				teamsIndexCount++;
+		FileReader fileReader = new FileReader(TEAM_STATS);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		
+		int count = 0, //Will hold the line number that we are currently reading
+				team0set = 0, //0 for information not yet set, 1 for information found and set
+				team1set = 0; //0 for information not yet set, 1 for information found and set
+		String line; //Will hold the line of text on the current line
+		String[] lineArray; //Will hold the split line
+		
+		while (((line = bufferedReader.readLine()) != null) && (team0set == 0 || team1set == 0)) {
+			count++;
+			
+			//Checking if the current line is either team's information
+			if (count == (teams[0].getIndex()+3)) {
+				lineArray = line.split(","); //Creating an array of the values for the team
+				teams[0].setAvgFG(Double.parseDouble(lineArray[1]));
+				teams[0].setAvg3(Double.parseDouble(lineArray[2]));
+				teams[0].setOppFG(Double.parseDouble(lineArray[3]));
+				teams[0].setOpp3(Double.parseDouble(lineArray[4]));
+				teams[0].setFtPP(Double.parseDouble(lineArray[5]));
+				teams[0].setFt(Double.parseDouble(lineArray[6]));
+				teams[0].setShotsFrom2(Double.parseDouble(lineArray[7]));
+				teams[0].setShotsFrom3(Double.parseDouble(lineArray[8]));
+				teams[0].setPossPG(Double.parseDouble(lineArray[9]));
+				teams[0].setToRate(Double.parseDouble(lineArray[10]));
+				team0set = 1;
 			}
-
-			// Setting the values for each team
-			switch (i) {
-			case 0:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setAvgFG(Double
-							.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html().replace("%", "")));
-				}
-				break;
-			case 1:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setAvg3(Double
-							.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html().replace("%", "")));
-				}
-				break;
-			case 2:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setOppFG(Double
-							.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html().replace("%", "")));
-				}
-				break;
-			case 3:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setOpp3(Double
-							.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html().replace("%", "")));
-				}
-				break;
-			case 4:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setFtPP(Double.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html()));
-				}
-				break;
-			case 5:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setFt(Double
-							.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html().replace("%", "")));
-				}
-				break;
-			case 6:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setShotsFrom2(Double
-							.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html().replace("%", "")));
-				}
-				break;
-			case 7:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setShotsFrom3(Double
-							.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html().replace("%", "")));
-				}
-				break;
-			case 8:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setPossPG(Double.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html()));
-				}
-				break;
-			case 9:
-				for (int x = 0; x < 2; x++) {
-					teams[x].setToRate(Double
-							.parseDouble(doc.select("td").get((teamsIndex[x] * cols) + 2).html().replace("%", "")));
-				}
-				break;
+			else if (count == (teams[1].getIndex()+3)) {
+				lineArray = line.split(","); //Creating an array of the values for the team
+				teams[1].setAvgFG(Double.parseDouble(lineArray[1]));
+				teams[1].setAvg3(Double.parseDouble(lineArray[2]));
+				teams[1].setOppFG(Double.parseDouble(lineArray[3]));
+				teams[1].setOpp3(Double.parseDouble(lineArray[4]));
+				teams[1].setFtPP(Double.parseDouble(lineArray[5]));
+				teams[1].setFt(Double.parseDouble(lineArray[6]));
+				teams[1].setShotsFrom2(Double.parseDouble(lineArray[7]));
+				teams[1].setShotsFrom3(Double.parseDouble(lineArray[8]));
+				teams[1].setPossPG(Double.parseDouble(lineArray[9]));
+				teams[1].setToRate(Double.parseDouble(lineArray[10]));
+				team1set = 1;
 			}
+			
+			continue;
 		}
-	}
+		
+		bufferedReader.close();
+		
+		//These two lines will check the print out the stats of each team so I can manually check with .CSV file to make sure it's pulling currectly
+//		System.out.println(teams[0].getName()+"\n"+teams[0].getAvgFG()+"\n"+teams[0].getAvg3()+"\n"+teams[0].getOppFG()+"\n"+teams[0].getOpp3()+"\n"+teams[0].getFtPP()+"\n"+teams[0].getFt()+"\n"+teams[0].getShotsFrom2()+"\n"+teams[0].getShotsFrom3()+"\n"+teams[0].getPossPG()+"\n"+teams[0].getToRate());
+//		System.out.println(teams[1].getName()+"\n"+teams[1].getAvgFG()+"\n"+teams[1].getAvg3()+"\n"+teams[1].getOppFG()+"\n"+teams[1].getOpp3()+"\n"+teams[1].getFtPP()+"\n"+teams[1].getFt()+"\n"+teams[1].getShotsFrom2()+"\n"+teams[1].getShotsFrom3()+"\n"+teams[1].getPossPG()+"\n"+teams[1].getToRate());
+
+}
 	
 	public void addOneToOtCounter() {
 		otCount++;

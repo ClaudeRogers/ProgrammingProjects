@@ -9,6 +9,9 @@ import java.io.IOException;
 * */
 
 //TODO implement rebounding
+//TODO Rebounding is implemented for missed shots. Still need to implement rebounding for miss FTs
+//TODO Need to have an input for how many games will be ran.
+//TODO Have a game constructor with the number of games to cycle through
 
 public class Main {
 	@SuppressWarnings("unused")

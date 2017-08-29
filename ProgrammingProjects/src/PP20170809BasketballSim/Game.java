@@ -244,7 +244,7 @@ public class Game {
 			// The second ticker to make it seem like a simulation
 			if (oneGame) {
 				try {
-					Thread.sleep(250); // 1000 milliseconds is one second.
+					Thread.sleep(500); // 1000 milliseconds is one second.
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}

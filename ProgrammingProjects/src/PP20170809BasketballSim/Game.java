@@ -17,9 +17,14 @@ import org.jsoup.nodes.Element;
 import utilities.BinarySearch;
 public class Game {
 	private int totalPoss = 0, 	// Total possessions of the game
-			half = 0, 			// 0 = first half, 1 = second half, 2 = OT
-			possession = 0, 	// 0 = team1, 1 = team2
-			otCount = 0;		// Count of OT periods
+			half = 0, 						// 0 = first half, 1 = second half, 2 = OT
+			possession = 0, 			// 0 = team1, 1 = team2
+			otCount = 0,				// Count of OT periods
+			teams0Wins = 0, 		// Amount of wins for teams[0]
+			teams1Wins = 0,			// Amount of wins for teams[1]
+			games = 0;					// The amount of games being played
+	
+	private boolean oneGame = false; // True is games == 1, otherwise false
 
 	// Array List to hold the amount of possession for each period
 	private int[] periodPoss = new int[3];
@@ -48,10 +53,10 @@ public class Game {
 	private static final File TEAM_STATE_DIR = new File("teamStats");
 	private static final File TEAM_STATS = new File("teamStats/teamStats.csv");
 
-	//TODO Add variable to Game() constructor for number of games played.
-	//If gamesPlayed > 1, do not show possessions and just print victories. Else if games = 1, show the possessions being played out.
-	Game() throws IOException {
+	Game(int games) throws IOException {
 		saveStatsToTextFile();
+		this.games = games;
+		if (this.games == 1) oneGame = true;
 		
 		Scanner sc = new Scanner(System.in);
 		for (int i = 0; i < 2; i++) {
@@ -80,7 +85,7 @@ public class Game {
 		}
 		sc.close();
 
-		System.out.println("\nTonight's game is " + teams[0].getName() + " vs " + teams[1].getName() + "\n");
+		if (oneGame) System.out.println("\nTonight's game is " + teams[0].getName() + " vs " + teams[1].getName() + "\n");
 
 		getStats(); // Getting the stats
 
@@ -113,11 +118,17 @@ public class Game {
 		teams[1].setOffMatchupRebound((teams[1].getOffRebound() + (100 - teams[0].getDefRebound()))/2);
 
 		// Play a game
-		playGame();
+		for (int i = 0; i < this.games; i++) {
+			playGame();
+		}
 	}
 
 	// Function to play the whole game
 	public void playGame() {
+		//Setting the scores to 0
+		teams[0].setScore(0);
+		teams[1].setScore(0);
+		
 		String firSec = "first";
 		// Calculating who wins the tipoff and gets the first possession
 		double tipoff = Math.random() * 100 + 1;
@@ -129,7 +140,7 @@ public class Game {
 			// Prints which half is starting.
 			if (getHalf() == 1)
 				firSec = "second";
-			System.out.println("The " + firSec + " half is starting!");
+			if (oneGame)	System.out.println("The " + firSec + " half is starting!");
 
 			// Printing out who won the tip if it is the first half
 			if (getHalf() == 0) {
@@ -142,22 +153,24 @@ public class Game {
 
 		// If game is tied after the first two halves
 		if (teams[0].getScore() == teams[1].getScore()) {
-			System.out.println("End of Regulation! Time to go to overtime!");
+			if (oneGame) System.out.println("End of Regulation! Time to go to overtime!");
 		}
 
 		// Run an overtime period
 		while (teams[0].getScore() == teams[1].getScore()) {
 			setHalf(2);
 			addOneToOtCounter();
-			System.out.println("Overtime period #" + getOtCount() + " is starting!");
+			if (oneGame) System.out.println("Overtime period #" + getOtCount() + " is starting!");
 			playPeriod();
 		}
 
 		//Prints out the winner
 		if (teams[0].getScore() > teams[1].getScore()) {
-			System.out.println(teams[0].getName() + " wins!");
+			if (oneGame) System.out.println(teams[0].getName() + " wins!");
+			teams0Wins++;
 		} else {
-			System.out.println(teams[1].getName() + " wins!");
+			if (oneGame) System.out.println(teams[1].getName() + " wins!");
+			teams1Wins++;
 		}
 	}
 
@@ -181,7 +194,7 @@ public class Game {
 		for (int i = 0; i < getPeriodPoss(getHalf()); i++) {
 			// Displaying the time left
 			setTimeLeft(getTimeLeft() - getTimeOfPoss(getHalf()));
-			System.out.println(
+			if (oneGame) System.out.println(
 					(int) (getTimeLeft() / 60) + ":" + String.format("%02d", (int) (getTimeLeft() % 60)));
 
 			// Calculates if possession results in turnover.
@@ -190,7 +203,7 @@ public class Game {
 			// If a turnover occurs. if the random turnover number is less than the TO rate
 			// of the team
 			if (turnover < getTeamWPoss().getToRate()) {
-				System.out.println(getTeamWPossName() + " turned the ball over!");
+				if (oneGame) System.out.println(getTeamWPossName() + " turned the ball over!");
 
 				// Get game score and change possession
 				getGameScore(teams);
@@ -207,19 +220,19 @@ public class Game {
 			if (twoOrThree > getTeamWPoss().getShotsFrom3()) {
 				if (fg < getTeamWPoss().getAvgFG()) {
 					getTeamWPoss().addToScore(2);
-					System.out.println(getTeamWPossName() + " scores a two pointer!");
+					if (oneGame) System.out.println(getTeamWPossName() + " scores a two pointer!");
 					willShootFTorRebound(1);
 				} else {
-					System.out.println(getTeamWPossName() + " misses a two pointer!");
+					if (oneGame) System.out.println(getTeamWPossName() + " misses a two pointer!");
 					willShootFTorRebound(2);
 				}
 			} else {
 				if (fg < getTeamWPoss().getAvg3()) {
 					getTeamWPoss().addToScore(3);
-					System.out.println(getTeamWPossName() + " scores a three pointer!");
+					if (oneGame) System.out.println(getTeamWPossName() + " scores a three pointer!");
 					willShootFTorRebound(1);
 				} else {
-					System.out.println(getTeamWPossName() + " misses a three pointer!");
+					if (oneGame) System.out.println(getTeamWPossName() + " misses a three pointer!");
 					willShootFTorRebound(3);
 				}
 			}
@@ -229,10 +242,12 @@ public class Game {
 //			changePossession();
 
 			// The second ticker to make it seem like a simulation
-			try {
-				Thread.sleep(250); // 1000 milliseconds is one second.
-			} catch (InterruptedException ex) {
-				Thread.currentThread().interrupt();
+			if (oneGame) {
+				try {
+					Thread.sleep(250); // 1000 milliseconds is one second.
+				} catch (InterruptedException ex) {
+					Thread.currentThread().interrupt();
+				}
 			}
 		}
 	}
@@ -258,7 +273,7 @@ public class Game {
 			changePossession();
 		}
 
-		System.out.println(getTeamWPossName() + " grabbed the rebound");
+		if (oneGame) System.out.println(getTeamWPossName() + " grabbed the rebound");
 	}
 
 	// Determines if a FT is made or missed
@@ -267,9 +282,9 @@ public class Game {
 		
 		if (ft < getTeamWPoss().getFt()) {
 			getTeamWPoss().addToScore(1);
-			System.out.println(getTeamWPossName() + " made a free throw!");
+			if (oneGame) System.out.println(getTeamWPossName() + " made a free throw!");
 		} else {
-			System.out.println(getTeamWPossName() + " missed a free throw!");
+			if (oneGame) System.out.println(getTeamWPossName() + " missed a free throw!");
 		}
 
 		getTeamWPoss().subFromFtStored();
@@ -452,7 +467,7 @@ public class Game {
 	public void printTipWinner(double tipoff) {
 		if (tipoff < 50) setPossession(0);
 		else setPossession(1);
-		System.out.println(getTeamWPossName() + " won the tip!\n");
+		if (oneGame) System.out.println(getTeamWPossName() + " won the tip!\n");
 	}
 
 	// Function that changes the possession of the game
@@ -464,7 +479,7 @@ public class Game {
 	// Displays the game score
 	public void getGameScore(Team[] teams) {
 		// Print out the score after every possession
-		System.out.println(teams[0].getName() + " " + teams[0].getScore() + " - " + teams[1].getScore() + " "
+		if (oneGame) System.out.println(teams[0].getName() + " " + teams[0].getScore() + " - " + teams[1].getScore() + " "
 				+ teams[1].getName() + "\n");
 	}
 
@@ -560,6 +575,22 @@ public class Game {
 
 	public void setTeams(Team[] teams) {
 		this.teams = teams;
+	}
+	
+	public int getTeams0Wins() {
+		return teams0Wins;
+	}
+
+	public void setTeams0Wins(int teams0Wins) {
+		this.teams0Wins = teams0Wins;
+	}
+
+	public int getTeams1Wins() {
+		return teams1Wins;
+	}
+
+	public void setTeams1Wins(int teams1Wins) {
+		this.teams1Wins = teams1Wins;
 	}
 }
 

@@ -15,7 +15,11 @@ public class Team {
 			shotsFrom3, 	// Avg points % from 3
 			possPG, 		// Avg possessions during a game
 			turnovers, 		// Avg turnovers during a game
-			toRate; 		// Turnover rate during the match-up
+			toRate,			// Turnover rate during the match-up
+			offRebound,		// Offensive Rebound Percentage
+			defRebound, 	// Defensive Rebound Percentage
+			offMatchupRebound; // (Team1 offRebound + (100 - Team2 defRebound) ) / 2
+
 	private int score, 		//Hold the score of the team object
 			index;					//Index of the team in the csv file
 	private String name; 	//Hold the name of the team object
@@ -556,5 +560,29 @@ public class Team {
 
 	public void setIndex(int index) {
 		this.index = index;
+	}
+	
+	public double getOffRebound() {
+		return offRebound;
+	}
+
+	public void setOffRebound(double offRebound) {
+		this.offRebound = offRebound;
+	}
+
+	public double getDefRebound() {
+		return defRebound;
+	}
+
+	public void setDefRebound(double defRebound) {
+		this.defRebound = defRebound;
+	}
+	
+	public double getOffMatchupRebound() {
+		return offMatchupRebound;
+	}
+
+	public void setOffMatchupRebound(double offMatchupRebound) {
+		this.offMatchupRebound = offMatchupRebound;
 	}
 }

@@ -46,6 +46,8 @@ public class Game {
 	private static final File TEAM_STATE_DIR = new File("teamStats");
 	private static final File TEAM_STATS = new File("teamStats/teamStats.csv");
 
+	//TODO Add variable to Game() constructor for number of games played.
+	//If gamesPlayed > 1, do not show possessions and just print victories. Else if games = 1, show the possessions being played out.
 	Game() throws IOException {
 		saveStatsToTextFile();
 		

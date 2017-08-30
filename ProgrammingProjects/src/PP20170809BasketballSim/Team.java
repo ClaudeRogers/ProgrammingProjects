@@ -23,7 +23,7 @@ public class Team {
 	private int score, 		//Hold the score of the team object
 			index;					//Index of the team in the csv file
 	private String name; 	//Hold the name of the team object
-	//TODO Move Possible_Team_names to a text doc that when .csv is updated, so is that. Then have this variable pull from that txt doc and create an array of valid names that way.
+
 	public static final String[] POSSIBLE_TEAM_NAMES = { //Static variable of all possible team names
 			"ABILENE CHRISTIAN",
 			"AIR FORCE",

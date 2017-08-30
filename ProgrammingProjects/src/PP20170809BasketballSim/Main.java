@@ -10,7 +10,6 @@ import java.util.Scanner;
 *The app then runs through a game displaying each possession
 * */
 
-//TODO Rebounding is implemented for missed shots. Still need to implement rebounding for miss FTs
 public class Main {
 	public static void main(String[] args) throws IOException {
 		//Asking the user how many games the teams will play

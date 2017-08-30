@@ -256,9 +256,7 @@ public class Game {
 	public void willShootFTorRebound(double ftAtt) {
 		// If the team has enough FT stored up to shoot
 		if (getTeamWPoss().getFtStored() >= ftAtt) {
-			for (int i = 0; i < ftAtt; i++) {
-				isFTMade();
-			}
+			isFTMade(ftAtt);
 		}
 		else if (ftAtt != 1){
 			rebound();
@@ -277,17 +275,21 @@ public class Game {
 	}
 
 	// Determines if a FT is made or missed
-	public void isFTMade() {
-		double ft = Math.random() * 100 + 1;
-		
-		if (ft < getTeamWPoss().getFt()) {
-			getTeamWPoss().addToScore(1);
-			if (oneGame) System.out.println(getTeamWPossName() + " made a free throw!");
-		} else {
-			if (oneGame) System.out.println(getTeamWPossName() + " missed a free throw!");
+	public void isFTMade(double ftAtt) {
+		for (int i = 0; i < ftAtt; i++) {
+			getTeamWPoss().subFromFtStored();
+			double ft = Math.random() * 100 + 1;
+			
+			if (ft < getTeamWPoss().getFt()) {
+				getTeamWPoss().addToScore(1);
+				if (oneGame) System.out.println(getTeamWPossName() + " made a free throw!");
+			} else {
+				if (oneGame) System.out.println(getTeamWPossName() + " missed a free throw!");
+				if (i == (ftAtt-1)) {
+					rebound();
+				}
+			}
 		}
-
-		getTeamWPoss().subFromFtStored();
 	}
 	
 	public static void saveStatsToTextFile() throws IOException{
@@ -353,9 +355,6 @@ public class Game {
 				teamNamesList.add(row.html().toUpperCase());
 			}
 			teamNamesList.sort(String::compareToIgnoreCase);
-			//TODO Save possible names to text doc, then have teams.POSSIBLE_TEAM_NAMES pull from the text doc.
-			//TODO update names doc when update stats doc
-//				Team.POSSIBLE_TEAM_NAMES = teamNamesList.toArray(new String[teamNamesList.size()]);
 			
 			//Now that the teams are sorted, let's go through each link and save the data
 			double[][] stats = new double[351][STATS_NEEDED_LINKS.length];

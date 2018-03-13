@@ -25,7 +25,7 @@ public class Team {
 	private String name; 	//Hold the name of the team object
 
 	public static final String[] POSSIBLE_TEAM_NAMES = { //Static variable of all possible team names
-			"ABILENE CHRISTIAN",
+			"ABL CHRISTIAN",
 			"AIR FORCE",
 			"AKRON",
 			"ALAB A&AMP;M",
@@ -130,7 +130,7 @@ public class Team {
 			"GEORGIA ST",
 			"GONZAGA",
 			"GRAMBLING ST",
-			"GRAND CANYON",
+			"GRD CANYON",
 			"HAMPTON",
 			"HARTFORD",
 			"HARVARD",
@@ -146,7 +146,7 @@ public class Team {
 			"IL-CHICAGO",
 			"ILLINOIS",
 			"ILLINOIS ST",
-			"INCARNATE WORD",
+			"INCAR WORD",
 			"INDIANA",
 			"INDIANA ST",
 			"IONA",
@@ -188,7 +188,7 @@ public class Team {
 			"MARYLAND",
 			"MARYLAND BC",
 			"MARYLAND ES",
-			"MASSACHUSETTS LOWELL",
+			"MASS LOWELL",
 			"MCNEESE ST",
 			"MEMPHIS",
 			"MERCER",

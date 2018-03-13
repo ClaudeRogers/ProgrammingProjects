@@ -244,7 +244,7 @@ public class Game {
 			// The second ticker to make it seem like a simulation
 			if (oneGame) {
 				try {
-					Thread.sleep(500); // 1000 milliseconds is one second.
+					Thread.sleep(1250); // 1000 milliseconds is one second.
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}
@@ -377,6 +377,7 @@ public class Game {
 					int index = BinarySearch.search(teamName.toUpperCase(), Team.POSSIBLE_TEAM_NAMES);
 					
 					//Saving the stat
+					System.out.println(index+" " +i);
 					stats[index][i] = stat;						
 				}
 			}

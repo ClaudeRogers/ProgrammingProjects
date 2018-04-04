@@ -1,0 +1,64 @@
+$blue: #0033A0;
+
+.bg-faded {
+  background-color: #D8D8D8
+}
+
+.card {
+  border-color: $blue;
+  margin-bottom: 10px;
+}
+
+.card-title{
+  font-weight: bold;
+}
+
+.header {
+  font-family: Lobster;
+  font-size: 2em;
+  color: $blue;
+  border-bottom: 1px solid $blue;
+}
+
+.subheader {
+  font-family: Lobster;
+  font-size: 1.5em;
+  color: $blue;
+  margin-top: 25px;
+}
+
+.mainContainer {
+  width: 95%;
+  margin: 25px auto 0px auto;
+}
+
+.mainContainerFooter {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid $blue;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+  .mainContainer{
+    width: 85%;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) { 
+  .mainContainer {
+    width: 950px;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+  .mainContainer{
+    width: 1150px;
+  }
+}

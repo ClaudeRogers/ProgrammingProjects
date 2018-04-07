@@ -1,0 +1,403 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
+<html>
+<head>
+<META http-equiv=Content-Type content="text/html; charset=UTF-8">
+<title>Exported from Notepad++</title>
+<style type="text/css">
+span {
+	font-family: 'Courier New';
+	font-size: 10pt;
+	color: #000000;
+}
+.sc0 {
+	background: #F2F4FF;
+}
+.sc2 {
+	color: #008000;
+	background: #F2F4FF;
+}
+.sc4 {
+	color: #FF0000;
+	background: #F2F4FF;
+}
+.sc5 {
+	font-weight: bold;
+	font-style: italic;
+	color: #000080;
+	background: #F2F4FF;
+}
+.sc6 {
+	color: #808080;
+	background: #F2F4FF;
+}
+.sc10 {
+	font-weight: bold;
+	background: #F2F4FF;
+}
+.sc11 {
+	background: #F2F4FF;
+}
+.sc14 {
+	color: #8000FF;
+	background: #F2F4FF;
+}
+</style>
+</head>
+<body>
+<div style="float: left; white-space: pre; line-height: 1; background: #FFFFFF; "><span class="sc5">function</span><span class="sc0"> </span><span class="sc11">enterMemFormValidate</span><span class="sc10">()</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+    </span><span class="sc2">//The string that contains the errors in the script
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">;</span><span class="sc0"> 
+    
+    </span><span class="sc2">//trimming the memberID after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">memberID</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"memberID"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">memberID</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">memberID</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the firstName after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">firstName</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"firstName"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">firstName</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">firstName</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the lastName after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">lastName</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"lastName"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">lastName</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">lastName</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming and replacing dashes in the licenseNumber after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">licenseNumber</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"licenseNumber"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">licenseNumber</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">licenseNumber</span><span class="sc10">.</span><span class="sc11">replace</span><span class="sc10">(</span><span class="sc14">/-/g</span><span class="sc10">,</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">).</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the licenseState after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">licenseState</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"licenseState"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">licenseState</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">licenseState</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the email after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">email</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"email"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">email</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">email</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//the formatting for a valid email
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">mailformat</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc14">/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/</span><span class="sc10">;</span><span class="sc0">
+    
+    </span><span class="sc2">//Checks if memberID is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">memberID</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0"> 
+        </span><span class="sc2">//Checks if memberID is not a number or if the length is not 6
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">((</span><span class="sc11">isNaN</span><span class="sc10">(</span><span class="sc11">memberID</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">==</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">||</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">memberID</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">!=</span><span class="sc0"> </span><span class="sc4">6</span><span class="sc10">)){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc6">"Member ID field must only be numbers, and 6 characters long. \n"</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if the memberID is not empty, is a number, and is 6 characters in length
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Member ID field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//checks if firstName is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">firstName</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc2">//checks if firstName is larger than 20 characters
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">firstName</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">&gt;</span><span class="sc0"> </span><span class="sc4">20</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"First Name field length cannot be longer than 20 characters. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if firstName is not empty nor larger than 20 characters
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"First Name field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//checks if lastName is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">lastName</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc2">//checks if lastName is larger than 20 characters
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">lastName</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">&gt;</span><span class="sc0"> </span><span class="sc4">20</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Last Name field length cannot be longer than 20 characters. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if lastName is not empty nor larger than 20 characters
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Last Name field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//if licenseNumber is not empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">licenseNumber</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc2">//if licenseNumber length is not 9
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">licenseNumber</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">!=</span><span class="sc0"> </span><span class="sc4">9</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Driver's License Number field must be 9 characters. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if licenseNumber is empty
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Driver's License Number field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//if licenseState is not empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">licenseState</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc2">//if licenseState length is not 2
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">licenseState</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">!=</span><span class="sc0"> </span><span class="sc4">2</span><span class="sc10">){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Driver's License State field length cannot be longer than 2 characters. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if licenseState is empty
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Driver's License State field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//if email is not empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">email</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc2">//if email is not valid email
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">email</span><span class="sc10">.</span><span class="sc11">match</span><span class="sc10">(</span><span class="sc11">mailformat</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">===</span><span class="sc0"> </span><span class="sc11">null</span><span class="sc10">){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Email Address field contains an invalid email. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if email is empty
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Email Address field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//if errorString is not empty, print out string and do not submit
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc11">alert</span><span class="sc10">(</span><span class="sc11">errorString</span><span class="sc10">);</span><span class="sc0">
+        </span><span class="sc5">return</span><span class="sc0"> </span><span class="sc5">false</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if errorString is empty, submit
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc5">return</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+</span><span class="sc10">}</span><span class="sc0">
+
+</span><span class="sc5">function</span><span class="sc0"> </span><span class="sc11">enterMovFormValidate</span><span class="sc10">()</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+    </span><span class="sc2">//The string that contains the errors in the script
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">;</span><span class="sc0"> 
+    
+    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">numberFormat</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc14">/^\d{0,3}(\.\d{0,2}){0,1}$/</span><span class="sc10">;</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the movieID after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">movieID</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"movieID"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">movieID</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">movieID</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the movieTitle after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">movieTitle</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"movieTitle"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">movieTitle</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">movieTitle</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the movieValue after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">movieValue</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"movieValue"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">movieValue</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">movieValue</span><span class="sc10">.</span><span class="sc11">replace</span><span class="sc10">(</span><span class="sc6">"$"</span><span class="sc10">,</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">).</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the copiesInStore after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">copiesInStore</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"copiesInStore"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">copiesInStore</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">copiesInStore</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the movieCategory after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">movieCategory</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"movieCategory"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">movieCategory</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">movieCategory</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//Checks if movieID is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">movieID</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0"> 
+        </span><span class="sc2">//Checks if movieID is not a number or if the length is not 6
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">((</span><span class="sc11">isNaN</span><span class="sc10">(</span><span class="sc11">movieID</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">==</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">||</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">movieID</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">!=</span><span class="sc0"> </span><span class="sc4">6</span><span class="sc10">)){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc6">"Movie ID field must only be numbers, and 6 characters long. \n"</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if the movieID is not empty, is a number, and is 6 characters in length
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Movie ID field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//checks if movieTitle is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">movieTitle</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc2">//checks if movieTitle length is greater than 50
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">movieTitle</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">&gt;</span><span class="sc0"> </span><span class="sc4">50</span><span class="sc10">){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Movie Title field length cannot be greater than 50 characters. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if movieTitle is empty
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Movie Title field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//checks if movieValue is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">movieValue</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc2">//if movieValue is not a number, or has more than 2 decimal places, or larger than the parameters set
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">((</span><span class="sc11">isNaN</span><span class="sc10">(</span><span class="sc11">movieValue</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">==</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">||</span><span class="sc0"> </span><span class="sc10">(!</span><span class="sc11">movieValue</span><span class="sc10">.</span><span class="sc11">match</span><span class="sc10">(</span><span class="sc11">numberFormat</span><span class="sc10">))){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Movie Value field must be a number between $0 and $999, with only two decimal places. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if movieValue is empty
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Movie Value field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0"> 
+    
+    </span><span class="sc2">//checks if copiesInStore is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">copiesInStore</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc2">//if copiesInStore is not a number, or the length is too great
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">((</span><span class="sc11">isNaN</span><span class="sc10">(</span><span class="sc11">copiesInStore</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">==</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">||</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">copiesInStore</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">&gt;</span><span class="sc0"> </span><span class="sc4">2</span><span class="sc10">)){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Copies In Store field must be a number, and have a length of 2 or less. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if copiesInStore is empty
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Copies in Store field must not be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//checks if movieCategory is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">movieCategory</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc2">//if length is greater than 30
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc10">(</span><span class="sc11">movieCategory</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">&gt;</span><span class="sc0"> </span><span class="sc4">30</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Movie Category field length can only be up to 30 characters. \n "</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">// if movieCategory is empty
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Movie Category field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//if errorString is not empty, print out string and do not submit
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc11">alert</span><span class="sc10">(</span><span class="sc11">errorString</span><span class="sc10">);</span><span class="sc0">
+        </span><span class="sc5">return</span><span class="sc0"> </span><span class="sc5">false</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if errorString is empty, submit
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc5">return</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+</span><span class="sc10">}</span><span class="sc0">
+
+</span><span class="sc5">function</span><span class="sc0"> </span><span class="sc11">enterRentFormValidate</span><span class="sc10">()</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+    </span><span class="sc2">//The string that contains the errors in the script
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">;</span><span class="sc0"> 
+    
+    </span><span class="sc2">//trimming the memberID after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">memberID</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"memberID"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">memberID</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">memberID</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the movieID after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">movieID</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"movieID"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">movieID</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">movieID</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the paymentMethod after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">paymentMethod</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"paymentMethod"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">paymentMethod</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">paymentMethod</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//regular expression for the date formatting 
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">dateFormat</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0">  </span><span class="sc14">/^\d{4}\-\d{2}\-\d{2}$/</span><span class="sc10">;</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the checkoutDate after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">checkoutDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"checkoutDate"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">checkoutDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">checkoutDate</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the returnDate after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">returnDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"returnDate"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">returnDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">returnDate</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//Creating a Date object to hold the dates to later compare and see if returnDate is later than checkoutDate, as a user cannot return a movie before checking out said movie
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">retDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc5">new</span><span class="sc0"> </span><span class="sc11">Date</span><span class="sc10">(</span><span class="sc11">returnDate</span><span class="sc10">.</span><span class="sc11">split</span><span class="sc10">(</span><span class="sc6">"/"</span><span class="sc10">));</span><span class="sc0">
+    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">checkDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc5">new</span><span class="sc0"> </span><span class="sc11">Date</span><span class="sc10">(</span><span class="sc11">checkoutDate</span><span class="sc10">.</span><span class="sc11">split</span><span class="sc10">(</span><span class="sc6">"/"</span><span class="sc10">));</span><span class="sc0">
+    
+    </span><span class="sc2">//Checks if movieID is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">movieID</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0"> 
+        </span><span class="sc2">//Checks if movieID is not a number or if the length is not 6
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">((</span><span class="sc11">isNaN</span><span class="sc10">(</span><span class="sc11">movieID</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">==</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">||</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">movieID</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">!=</span><span class="sc0"> </span><span class="sc4">6</span><span class="sc10">)){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc6">"Movie ID field must only be numbers, and 6 characters long. \n"</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if the movieID is not empty, is a number, and is 6 characters in length
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Movie ID field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//Checks if memberID is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">memberID</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0"> 
+        </span><span class="sc2">//Checks if memberID is not a number or if the length is not 6
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">((</span><span class="sc11">isNaN</span><span class="sc10">(</span><span class="sc11">memberID</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">==</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">)</span><span class="sc0"> </span><span class="sc10">||</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">memberID</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">!=</span><span class="sc0"> </span><span class="sc4">6</span><span class="sc10">)){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc6">"Member ID field must only be numbers, and 6 characters long. \n"</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if the memberID is not empty, is a number, and is 6 characters in length
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Member ID field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//Checks if paymentMethod is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">paymentMethod</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc2">//Checks if paymentMethod length is greater than 15 characters
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">paymentMethod</span><span class="sc10">.</span><span class="sc11">length</span><span class="sc0"> </span><span class="sc10">&gt;</span><span class="sc0"> </span><span class="sc4">15</span><span class="sc10">){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Payment Method field length cannot be greater than 15 characters. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if paymentMethod is empty
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Payment Method field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//checks if checkout date is empty
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">checkoutDate</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc2">//if date format doesn't match
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(!</span><span class="sc11">checkoutDate</span><span class="sc10">.</span><span class="sc11">match</span><span class="sc10">(</span><span class="sc11">dateFormat</span><span class="sc10">)){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Checkout Date field must follow the YYYY-MM-DD date formatting. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if checkout date is empty
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Checkout Date field cannot be blank. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    
+    </span><span class="sc2">//checks if return date matches the formatting.  This doesn't check if returnDate is empty as returnDate can be null or empty because when a movie is checked out, it has not been returned yet.
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">returnDate</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(!</span><span class="sc11">returnDate</span><span class="sc10">.</span><span class="sc11">match</span><span class="sc10">(</span><span class="sc11">dateFormat</span><span class="sc10">)){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Return Date field must follow the YYYY-MM-DD date formatting. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0"> 
+        </span><span class="sc2">//If return date is not empty, then must check if return date is after checkout date. If return date is not after checkout date, throw and error in the errorstring
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">checkDate</span><span class="sc0"> </span><span class="sc10">&gt;</span><span class="sc0"> </span><span class="sc11">retDate</span><span class="sc10">){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Return Date field must be a date after the value entered in Checkout Date field. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+
+    </span><span class="sc2">//if errorString is not empty, print out string and do not submit
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc11">alert</span><span class="sc10">(</span><span class="sc11">errorString</span><span class="sc10">);</span><span class="sc0">
+        </span><span class="sc5">return</span><span class="sc0"> </span><span class="sc5">false</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if errorString is empty, submit
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc5">return</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+</span><span class="sc10">}</span><span class="sc0">
+
+</span><span class="sc5">function</span><span class="sc0"> </span><span class="sc11">enterReturnFormValidate</span><span class="sc10">()</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+    </span><span class="sc2">//The string that contains the errors in the script
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">;</span><span class="sc0"> 
+    
+    </span><span class="sc2">//regular expression for the date formatting 
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">dateFormat</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0">  </span><span class="sc14">/^\d{4}\-\d{2}\-\d{2}$/</span><span class="sc10">;</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the checkoutDate after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">checkoutDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"checkoutDate"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">checkoutDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">checkoutDate</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//trimming the returnDate after declaring the var
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">returnDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">document</span><span class="sc10">.</span><span class="sc11">getElementById</span><span class="sc10">(</span><span class="sc6">"returnDate"</span><span class="sc10">).</span><span class="sc11">value</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc11">returnDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc11">returnDate</span><span class="sc10">.</span><span class="sc11">trim</span><span class="sc10">();</span><span class="sc0">
+    
+    </span><span class="sc2">//Creating a Date object to hold the dates to later compare and see if returnDate is later than checkoutDate, as a user cannot return a movie before checking out said movie
+</span><span class="sc0">    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">retDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc5">new</span><span class="sc0"> </span><span class="sc11">Date</span><span class="sc10">(</span><span class="sc11">returnDate</span><span class="sc10">.</span><span class="sc11">split</span><span class="sc10">(</span><span class="sc6">"-"</span><span class="sc10">));</span><span class="sc0">
+    </span><span class="sc5">var</span><span class="sc0"> </span><span class="sc11">checkDate</span><span class="sc0"> </span><span class="sc10">=</span><span class="sc0"> </span><span class="sc5">new</span><span class="sc0"> </span><span class="sc11">Date</span><span class="sc10">(</span><span class="sc11">checkoutDate</span><span class="sc10">.</span><span class="sc11">split</span><span class="sc10">(</span><span class="sc6">"-"</span><span class="sc10">));</span><span class="sc0">
+    
+    </span><span class="sc2">//checks if return date matches the formatting.  This doesn't check if returnDate is empty as returnDate can be null or empty because when a movie is checked out, it has not been returned yet.
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">returnDate</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(!</span><span class="sc11">returnDate</span><span class="sc10">.</span><span class="sc11">match</span><span class="sc10">(</span><span class="sc11">dateFormat</span><span class="sc10">)){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Return Date field must follow the YYYY-MM-DD date formatting. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0"> 
+        </span><span class="sc2">//If return date is not empty, then must check if return date is after checkout date. If return date is not after checkout date, throw and error in the errorstring
+</span><span class="sc0">        </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">checkDate</span><span class="sc0"> </span><span class="sc10">&gt;</span><span class="sc0"> </span><span class="sc11">retDate</span><span class="sc10">){</span><span class="sc0">
+            </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Return Date field must be a date after the value entered in Checkout Date field. \n"</span><span class="sc10">;</span><span class="sc0">
+        </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">+=</span><span class="sc0"> </span><span class="sc6">"Return Date field must not be empty. \n"</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+
+    </span><span class="sc2">//if errorString is not empty, print out string and do not submit
+</span><span class="sc0">    </span><span class="sc5">if</span><span class="sc0"> </span><span class="sc10">(</span><span class="sc11">errorString</span><span class="sc0"> </span><span class="sc10">!==</span><span class="sc0"> </span><span class="sc6">""</span><span class="sc10">){</span><span class="sc0">
+        </span><span class="sc11">alert</span><span class="sc10">(</span><span class="sc11">errorString</span><span class="sc10">);</span><span class="sc0">
+        </span><span class="sc5">return</span><span class="sc0"> </span><span class="sc5">false</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+    </span><span class="sc2">//if errorString is empty, submit
+</span><span class="sc0">    </span><span class="sc5">else</span><span class="sc0"> </span><span class="sc10">{</span><span class="sc0">
+        </span><span class="sc5">return</span><span class="sc0"> </span><span class="sc5">true</span><span class="sc10">;</span><span class="sc0">
+    </span><span class="sc10">}</span><span class="sc0">
+</span><span class="sc10">}</span><span class="sc0">
+</span></div></body>
+</html>

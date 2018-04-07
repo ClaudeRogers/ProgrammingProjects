@@ -1,0 +1,25 @@
+CREATE TABLE members (
+memberID INT(6) PRIMARY KEY,
+lastName VARCHAR (20),
+firstName VARCHAR (20),
+licenseNum CHAR(9),
+state CHAR(2),
+email VARCHAR(30)
+);
+
+CREATE TABLE movies (
+movieID INT(6) PRIMARY KEY,
+title VARCHAR (50),
+category VARCHAR (30),
+value DOUBLE(5,2),
+copiesInStore INT(2)
+);
+
+CREATE TABLE rentals (
+memberID INT(6),
+movieID INT(6),
+PRIMARY KEY (memberID, movieID),
+checkoutDate DATE,
+returnDate DATE,
+paymentMethod VARCHAR (15)
+);
